@@ -5,16 +5,12 @@ client = pymongo.MongoClient(url)
 db = client["UKdata"]
 dbCrime = db["Crime"]
 
-listCrime = dbCrime.distinct('Crime type')
+def countMonthCrime(postcode): #linechart
 
-countCrime = dbCrime.count_documents({'Crime type':listCrime[0]})
+    list_countCrime = dbCrime.aggregate([
+        {"$match":{"$and":[{"postcode":postcode},{"date":{"$lte":"2019-06"}}]}},
+        {"$project":{"all_crime&asb":1,"date":"$date","_id":0}},
+        {"$sort":{"_id":-1}}
+    ])
 
-numCrime = []
-
-for i in range(len(listCrime)):
-    numCrime.append(dbCrime.count_documents({'Crime type':listCrime[i]}))
-
-crimeDate = zip(listCrime, numCrime)
-dictCrimeDate = dict(crimeDate)
-
-dictCrimeDate
+    return list(list_countCrime)
