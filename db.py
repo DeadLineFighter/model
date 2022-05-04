@@ -5,12 +5,30 @@ client = pymongo.MongoClient(url)
 db = client["UKdata"]
 dbCrime = db["Crime"]
 
-def countMonthCrime(postcode): #linechart
+def countMonthCrime(postcode): #suggest use linechart to plotly
 
-    list_countCrime = dbCrime.aggregate([
-        {"$match":{"$and":[{"postcode":postcode},{"date":{"$lte":"2019-06"}}]}},
+    monthCrime = dbCrime.aggregate([
+        {"$match":{"$and":[{"postcode":postcode},{"date":{"$lte":"2019-06"}}]}}, #as after 2019-06, the date is not real
         {"$project":{"all_crime&asb":1,"date":"$date","_id":0}},
         {"$sort":{"_id":-1}}
     ])
 
-    return list(list_countCrime)
+    return list(monthCrime) #e.g countMonthCrime("BL0")
+
+def countAllCrime(postcode): #count all crime date with postcode
+
+    count = 0
+
+    allCrime = dbCrime.aggregate([
+        {"$match":{"$and":[{"postcode":postcode},{"date":{"$lte":"2019-06"}}]}},
+        {"$project":{"all_crime&asb":1,"date":"$date","_id":0}},
+        {"$sort":{"_id":-1}}        
+    ])
+
+    listAllCrime = list(allCrime)
+
+    for i in range(len(listAllCrime)):
+
+        count += listAllCrime[i]['all_crime&asb']
+
+    return count #e.g countAllCrime("BL0")
