@@ -49,5 +49,3 @@ def countAllCrime(postcode): #count all crime date with postcode
         count += listAllCrime[i]['all_crime&asb']
 
     return count #e.g countAllCrime("BL0")
-
-def 
