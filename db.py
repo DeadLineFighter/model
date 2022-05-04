@@ -76,3 +76,19 @@ def countPoiType(postcode):
     ])
 
     return list(poiType) #e.g countPoiType("WN2")
+
+def rightmoveProperty(postcode): #count property type
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry)
+    
+    psToRightmove = propertyCol.aggregate([
+    {"$match":{"geometry":{
+                "$geoWithin":{
+                "$geometry":list_dbGeometry[0]["geometry"]}}}},
+                {"$project":{"_id": 0, 
+                            "combine_property_type":1}},
+    {"$group":{"_id":"$combine_property_type","count":{"$sum":1}}}
+    ])
+
+    return list(psToRightmove) #e.g rightmoveProperty("LS1")
