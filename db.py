@@ -4,6 +4,20 @@ url="mongodb://ia.dsa.21.a:tuJ6ZdJGWrEf8SAd6gb8ZaHUcs83HHJu@18.189.210.178:27017
 client = pymongo.MongoClient(url)
 db = client["UKdata"]
 dbCrime = db["Crime"]
+geoCol = db["UkGEO"]
+
+#----------------------
+
+dbGeometry = geoCol.find({"name":"LS1"})
+list_dbGeometry = list(dbGeometry)
+list_dbGeometry[0]["geometry"]
+
+for i in range(len(list_dbGeometry[0]["geometry"]["coordinates"][0])):
+    list_dbGeometry[0]["geometry"]["coordinates"][0][i][0], list_dbGeometry[0]["geometry"]["coordinates"][0][i][1] = list_dbGeometry[0]["geometry"]["coordinates"][0][i][1], list_dbGeometry[0]["geometry"]["coordinates"][0][i][0]
+
+list_dbGeometry[0]["geometry"] #change place
+
+#----------------------
 
 def countMonthCrime(postcode): #suggest use linechart to plotly
 
@@ -32,3 +46,5 @@ def countAllCrime(postcode): #count all crime date with postcode
         count += listAllCrime[i]['all_crime&asb']
 
     return count #e.g countAllCrime("BL0")
+
+def 
