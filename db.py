@@ -3,10 +3,28 @@ import pymongo
 url="mongodb://ia.dsa.21.a:tuJ6ZdJGWrEf8SAd6gb8ZaHUcs83HHJu@18.189.210.178:27017/?authSource=IA&readPreference=primary&appname=MongoDB%20Compass%20Community&directConnection=true&ssl=false"
 client = pymongo.MongoClient(url)
 db = client["UKdata"]
-dbCrime = db["Crime"]
+dbCrime = db["uk_crime"]
 dbGooPOI = db["GooglePOI"]
-#----------------------
 geoCol = db["UkGEO"]
+#----------------------
+testDb = client["IA"]
+propertyCol = testDb["Rightmove_15cities Backup"]
+
+def rightmoveLatLongAndGeo(postcode): #for map plotly
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry)
+
+    psToRightmove = propertyCol.aggregate([
+    {"$match":{"geometry":{
+                "$geoWithin":{
+                "$geometry":list_dbGeometry[0]["geometry"]}}}},
+                {"$project":{"_id": 0, 
+                            "latitude": 1,
+                            "longitude": 1}}])
+                            
+    return list_dbGeometry[0]["geometry"]["coordinates"][0] + list(psToRightmove) #e.g rightmoveLatLongAndGeo("LS1")
+    #First one is GEOmetry, second is job place
 
 def changeLatLong(postcode):
 
