@@ -4,7 +4,7 @@ url="mongodb://ia.dsa.21.a:tuJ6ZdJGWrEf8SAd6gb8ZaHUcs83HHJu@18.189.210.178:27017
 client = pymongo.MongoClient(url)
 db = client["UKdata"]
 dbCrime = db["Crime"]
-
+dbGooPOI = db["GooglePOI"]
 #----------------------
 geoCol = db["UkGEO"]
 
@@ -19,7 +19,6 @@ def changeLatLong(postcode):
     result = list_dbGeometry[0]["geometry"] #change place
 
     return result
-
 #----------------------
 
 def countMonthCrime(postcode): #suggest use linechart to plotly
@@ -49,3 +48,13 @@ def countAllCrime(postcode): #count all crime date with postcode
         count += listAllCrime[i]['all_crime&asb']
 
     return count #e.g countAllCrime("BL0")
+
+def countPoiType(postcode):
+
+    poiType = dbGooPOI.aggregate([
+        {"$match":{"postcode":postcode}},
+        {"$project":{"_id":0,"label_types":1,"type":"$label_types"}}, 
+        {"$group":{"_id":"$label_types","count":{"$sum":1}}}
+    ])
+
+    return list(poiType) #e.g countPoiType("WN2")
