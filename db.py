@@ -6,6 +6,7 @@ db = client["UKdata"]
 dbCrime = db["uk_crime"]
 dbGooPOI = db["GooglePOI"]
 geoCol = db["UkGEO"]
+school = db["UK_Schools"]
 #----------------------
 testDb = client["IA"]
 propertyCol = testDb["Rightmove_15cities Backup"]
@@ -92,3 +93,51 @@ def rightmoveProperty(postcode): #count property type
     ])
 
     return list(psToRightmove) #e.g rightmoveProperty("LS1")
+
+def schoolPhase(postcode):
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry) 
+
+    phase = school.aggregate([
+    {"$match":{"geometry":{
+                "$geoWithin":{
+                "$geometry":list_dbGeometry[0]["geometry"]}}}},
+                {"$project":{"_id": 0, 
+                            "PhaseOfEducation (name)":1}},
+    {"$group":{"_id":"$PhaseOfEducation (name)","count":{"$sum":1}}}
+    ])
+
+    return list(phase) #e.g schoolPhase("LS2")
+
+def schoolRating(postcode):
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry) 
+
+    rating = school.aggregate([
+    {"$match":{"geometry":{
+                "$geoWithin":{
+                "$geometry":list_dbGeometry[0]["geometry"]}}}},
+                {"$project":{"_id": 0, 
+                            "OfstedRating (name)":1}},
+    {"$group":{"_id":"$OfstedRating (name)","count":{"$sum":1}}}
+    ])
+
+    return list(rating) #e.g schoolRating("BL0")
+
+def schoolGender(postcode):
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry) 
+
+    gender = school.aggregate([
+    {"$match":{"geometry":{
+                "$geoWithin":{
+                "$geometry":list_dbGeometry[0]["geometry"]}}}},
+                {"$project":{"_id": 0, 
+                            "Gender (name)":1}},
+    {"$group":{"_id":"$Gender (name)","count":{"$sum":1}}}
+    ])
+
+    return list(gender) #e.g schoolGender("LS3")
