@@ -1,4 +1,6 @@
 import pymongo
+import plotly.express as px
+import pandas as pd
 
 url="mongodb://ia.dsa.21.a:tuJ6ZdJGWrEf8SAd6gb8ZaHUcs83HHJu@18.189.210.178:27017/?authSource=IA&readPreference=primary&appname=MongoDB%20Compass%20Community&directConnection=true&ssl=false"
 client = pymongo.MongoClient(url)
@@ -10,6 +12,7 @@ school = db["UK_Schools"]
 #----------------------
 testDb = client["IA"]
 propertyCol = testDb["Rightmove_15cities Backup"]
+
 
 def rightmoveLatLongAndGeo(postcode): #for map plotly
 
