@@ -43,3 +43,5 @@ def POI_type(postcode):
         },
     title = "Number of type of industries in "+postcode)
     return fig
+
+#test msg
