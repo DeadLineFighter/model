@@ -31,7 +31,7 @@ def crime_many_month_line(postcodes):
         "date": "Date"
         },
     title = "Number of crime in every month in "+str)
-    return fig.show()
+    return fig
 
 def POI_type(postcode):
     df = pd.DataFrame(countPoiType(postcode))
@@ -42,6 +42,32 @@ def POI_type(postcode):
         "_id": "Type of industries"
         },
     title = "Number of type of industries in "+postcode)
+    return fig
+
+def property_pie_bar(postcode):
+    df = pd.DataFrame(rightmoveProperty(postcode))
+    if df[df.columns[0]].count() >14:
+        df.sort_values(by=['count'],ascending=False,inplace=True)
+        fig = px.bar(df, x="_id", y="count", color="_id",
+        labels={
+            "count": "Num of property",
+            "_id": "Type of property"
+            },
+        title = "Number of type of properties in " + postcode)
+        return fig
+    else:
+        fig = px.pie(df, values='count', names='_id',
+                    title='Number of property in '+postcode,
+                    hover_data=['_id'], labels={'_id':'Property type'})
+        fig.update_traces(textposition='inside', textinfo='percent+label')
+        return fig
+
+def school_gender_pie(postcode):
+    df = pd.DataFrame(schoolGender(postcode))
+    fig = px.pie(df, values='count', names='_id',
+        title='Number of gender in '+postcode,
+        hover_data=['_id'], labels={'_id':'Gender'})
+    fig.update_traces(textposition='inside', textinfo='percent+label')
     return fig
 
 #test msg
