@@ -29,7 +29,6 @@ class RecommenderEngine:
     def data_process(self,data2,df,data_OSM):
         #education
         school = data2[data2['OfstedRating (name)'] >= 3].groupby('name',as_index=False).count()[['name','index']]
-        school['index'] = school['index'] / school['index'].abs().max()
         school.rename(columns={"name":'postcode',"index":"school"}, inplace=True)
 
         #diet
@@ -100,15 +99,23 @@ class RecommenderEngine:
         full_data = reduce(lambda left,right: pd.merge(left,right,on='postcode',how="left"), final_dfs) 
         full_data=full_data.fillna(0)
 
-        final_df = full_data[["veterinary care"]]
-        final_df["education"] = full_data[["school"]]
+        final_df = full_data[["school"]]
+        final_df.rename(columns={"school":'education'}, inplace=True)
+        final_df[["veterinary care"]] = full_data[["veterinary care"]]
         final_df["entertainment"] = (full_data["amusement park"]+full_data["rv park"]+full_data["park"])
         final_df["diet"] = (full_data["meal delivery"]+full_data["bakery"]+full_data["bar"]+full_data["cafe"])
         final_df["medical"] = (full_data["dentist"]+full_data["doctor"]+full_data["drugstore"]+full_data["hospitals"]+full_data["pharmacy"]+full_data["physiotherapist"])
         final_df["shopping"] = (full_data["convenience store"]+full_data["department store"]+full_data["shopping mall"]+full_data["supermarket"])
         final_df["traffic"] = full_data[["traffic"]]
-        for i in final_df.columns[1:]:
+
+        for i in final_df.columns[:]:
             final_df[i] = final_df[i] / final_df[i].abs().max()
+        
+        counter = 0
+        for i in final_df.columns[:]:
+            final_df[i]= final_df[i]*input_data[counter]
+            counter+=1
+
 
         score_dict = {}
         for index, row in final_df.iterrows():
