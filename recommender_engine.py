@@ -9,13 +9,15 @@ from functools import reduce
 class RecommenderEngine:
     def __init__(self):
         print("engine initialized")
-        self.school_data= pd.read_csv("school_data.csv")
 
         url="mongodb://ia.dsa.21.a:tuJ6ZdJGWrEf8SAd6gb8ZaHUcs83HHJu@18.189.210.178:27017/?authSource=IA&readPreference=primary&appname=MongoDB%20Compass%20Community&directConnection=true&ssl=false"
         client = pymongo.MongoClient(url)
         mydb = client["UKdata"]
         mycol = mydb["GooglePOI"]
         self.google_poi = pd.DataFrame(list(mycol.find({},{"label_types":1,"rating":1,"postcode":1})))
+
+        mycol = mydb["School_data_for_model"]
+        self.school_data= pd.DataFrame(list(mycol.find({},{"name":1,"OfstedRating (name)":1})))
 
         mycol = mydb["OSM_Transportation"]
         self.traffic_data = pd.DataFrame(list(mycol.find({},{"Postcode":1})))
@@ -28,8 +30,8 @@ class RecommenderEngine:
 
     def data_process(self,data2,df,data_OSM):
         #education
-        school = data2[data2['OfstedRating (name)'] >= 3].groupby('name',as_index=False).count()[['name','index']]
-        school.rename(columns={"name":'postcode',"index":"school"}, inplace=True)
+        school = data2[data2['OfstedRating (name)'] >= 3].groupby('name',as_index=False).count()[['name','_id']]
+        school.rename(columns={"name":'postcode',"_id":"school"}, inplace=True)
 
         #diet
         c1 = (df['label_types'].str.contains(pat = 'meal delivery') & (df['rating'] >= 3.5))
