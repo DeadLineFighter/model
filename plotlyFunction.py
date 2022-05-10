@@ -7,6 +7,9 @@ import plotly.express as px
 import pandas as pd
 from dash import Dash, dcc, html, Input, Output
 import plotly.graph_objects as go
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
 
 sys.path.append(sys.path.append(os.path.dirname(os.path.abspath(__file__))))
 
@@ -46,8 +49,8 @@ def countMonthCrime(postcode): #suggest use linechart to plotly
 
     return list(monthCrime) #e.g countMonthCrime("BL0")
 
-
 #---
+
 def crime_month_line(postcode):
     df = pd.DataFrame(countMonthCrime(postcode))
     fig = px.line(df, x="date", y="all_crime&asb",
@@ -58,11 +61,18 @@ def crime_month_line(postcode):
     title = "Number of crime in every month in "+postcode)
     return fig
 
-crime_month_line("BL0").write_html('first_figure.html', auto_open=True)
+# crime_month_line("BL0").write_html('first_figure.html', auto_open=True)
 
+#--- testcase
 
+app = dash.Dash()
+app.layout = html.Div([
+    dcc.Graph(figure=crime_month_line("BL0"))
+])
 
+app.run_server(debug=True, use_reloader=False)
 
+#---
 
 def crime_many_month_line(postcodes):
     list_of_dfs = list()
