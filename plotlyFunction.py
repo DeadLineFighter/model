@@ -61,19 +61,6 @@ def crime_month_line(postcode):
     title = "Number of crime in every month in "+postcode)
     return fig
 
-# crime_month_line("BL0").write_html('first_figure.html', auto_open=True)
-
-#--- testcase
-
-app = dash.Dash()
-app.layout = html.Div([
-    dcc.Graph(figure=crime_month_line("BL0"))
-])
-
-app.run_server(debug=True, use_reloader=False)
-
-#---
-
 def crime_many_month_line(postcodes):
     list_of_dfs = list()
     toString = list()
