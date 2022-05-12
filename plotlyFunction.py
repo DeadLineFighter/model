@@ -1,6 +1,9 @@
 from re import M
 import sys
 import os
+
+sys.path.append(sys.path.append(os.path.dirname(os.path.abspath(__file__))))
+
 from db import *
 import pymongo
 import plotly.express as px
@@ -10,8 +13,6 @@ import plotly.graph_objects as go
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-
-sys.path.append(sys.path.append(os.path.dirname(os.path.abspath(__file__))))
 
 url="mongodb://ia.dsa.21.a:tuJ6ZdJGWrEf8SAd6gb8ZaHUcs83HHJu@18.189.210.178:27017/?authSource=IA&readPreference=primary&appname=MongoDB%20Compass%20Community&directConnection=true&ssl=false"
 client = pymongo.MongoClient(url)
