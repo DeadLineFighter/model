@@ -116,4 +116,4 @@ def school_gender_pie(postcode):
     fig.update_traces(textposition='inside', textinfo='percent+label')
     return fig
 
-#test msg
+#test
