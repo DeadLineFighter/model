@@ -1,6 +1,7 @@
 from re import M
 import sys
 import os
+from turtle import title
 
 sys.path.append(sys.path.append(os.path.dirname(os.path.abspath(__file__))))
 
@@ -14,6 +15,31 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
+url="mongodb://ia.dsa.21.a:tuJ6ZdJGWrEf8SAd6gb8ZaHUcs83HHJu@18.189.210.178:27017/?authSource=IA&readPreference=primary&appname=MongoDB%20Compass%20Community&directConnection=true&ssl=false"
+client = pymongo.MongoClient(url)
+db = client["UKdata"]
+dbCrime = db["uk_crime"]
+dbGooPOI = db["GooglePOI"]
+school = db["UK_Schools"]
+geoCol = db["UkGEO"]
+
+testDb = client["IA"]
+propertyCol = testDb["Rightmove_15cities Backup"]
+
+#---------------------
+
+def changeLatLong(postcode):
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry)
+
+    for i in range(len(list_dbGeometry[0]["geometry"]["coordinates"][0])):
+        list_dbGeometry[0]["geometry"]["coordinates"][0][i][0], list_dbGeometry[0]["geometry"]["coordinates"][0][i][1] = list_dbGeometry[0]["geometry"]["coordinates"][0][i][1], list_dbGeometry[0]["geometry"]["coordinates"][0][i][0]
+
+    result = list_dbGeometry[0]["geometry"] #change place
+
+    return result
+
 #------Crime----------------
 #1
 def crime_month_line(df):
@@ -22,7 +48,7 @@ def crime_month_line(df):
         "all_crime&asb": "Number of crime",
         "date": "Date"
         },
-    title =""
+    title ="Number of Crime"
     )
     return fig
 #2
@@ -33,7 +59,7 @@ def criTyp_line(df):
         "date": "Date",
         "value": "Sum of Crime Type"
         },
-    title = "title",
+    title = "Number of Crime Type",
     height=600)
     return fig
 
@@ -48,7 +74,7 @@ def POI_type(df):
         "count": "Num of industry",
         "_id": "Type of industries"
         },
-    title = "Number of type of industries in ")
+    title = "Number of type of industries")
     return fig
 
 #2
@@ -60,7 +86,7 @@ def poiRat_bar(df):
         "_id": "Enterprise",
         "avg": "Average score"
         },
-    title = "Average score of Enterprise in ")
+    title = "Average score of Enterprise")
     return fig
 
 #3
@@ -69,7 +95,7 @@ def higRat_sca(df):
                 labels={
                     "count": "Num of industry",
                     "_id": "Type of industries"
-                    },title = "Number of type of industries in "
+                    },title = "Number of type of industries"
                 )
  
     return fig
@@ -92,7 +118,7 @@ def schPha_bar(df):
         "count": "Sum",
         "_id": "Rating"
         },
-    title = "School Phase in ",
+    title = "Number of School Phase",
     orientation='h')
     return fig
 
@@ -103,8 +129,8 @@ def schRat_bar(df):
     fig = px.bar(df, x="count", y="_id", color='_id', orientation='h',
         labels={
         "count": "Sum",
-        "_id": "School Rating"
-        }, title = "School Rating in ")
+        "_id": "Number of School Rating"
+        }, title = "School Rating")
     return fig
     
     
@@ -117,12 +143,12 @@ def pro_line(df):
             "count": "Num of Property",
             "_id": "Property Type"
         },
-    title = "Number of Property Type in " )
+    title = "Number of Property Type" )
     return fig
 #2
 def chaPie(df):
     fig = px.pie(df, values='count', names='_id',
-        title='Number of Channel in ',
+        title='Number of Channel ',
         hover_data=['_id'], labels={'_id':'Channel'})
     fig.update_traces(textposition='inside', textinfo='percent+label')
     return fig
@@ -136,12 +162,13 @@ def avgPri_pieBar(df):
             "count": "Number of average price property",
             "_id": "Type of property"
             },
-        title = "Number of average price property in " )
+        title = "Number of average price property" )
         fig.update_traces(marker_size=20)
         return fig
     else:
         fig = px.pie(df, values='count', names='_id',
-            title='Number of average price property in ',
+            title='Number of average price property',
             hover_data=['_id'], labels={'_id':'Type'})
         fig.update_traces(textposition='inside', textinfo='percent+label')
     return fig
+
