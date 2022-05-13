@@ -105,27 +105,6 @@ def countPoiType(postcode):
 
     return list(poiType) #e.g countPoiType("WN2")
 
-def poiRatingAvg(postcode):
-
-    avg = dbGooPOI.aggregate([
-        {"$match":{"postcode":postcode}},
-        {"$project":{"_id":0,"label_type":1,"rate":"$rating","type":"$label_types"}}, 
-        {"$group":{"_id":"$type","avg":{"$avg":"$rate"}}}
-    ])
-
-    return list(avg) #e.g poiRatingAvg("LS1")
-
-def highScoreRatingType(postcode): #rating greater than 4.0 counting
-
-    highScore = dbGooPOI.aggregate([
-        {"$match":{"$and":[{"postcode":postcode},{"rating":{"$gte":4.0}}]}},
-        {"$project":{"_id":0,"label_type":1,"rate":"$rating","type":"$label_types"}}, 
-        {"$group":{"_id":"$type","count":{"$sum":1}}},
-        {"$sort":{"count":-1}}
-    ])
-
-    return list(highScore) #e.g highScoreRatingType("LS1")
-
 def rightmoveProperty(postcode): #count property type
 
     dbGeometry = geoCol.find({"name":postcode})
@@ -226,3 +205,41 @@ def schoolGender(postcode):
     ])
 
     return list(gender) #e.g schoolGender("LS3")
+
+def poiRatingAvg(postcode):
+    
+    avg = dbGooPOI.aggregate([
+        {"$match":{"postcode":postcode}},
+        {"$project":{"_id":0,"label_type":1,"rate":"$rating","type":"$label_types"}}, 
+        {"$group":{"_id":"$type","avg":{"$avg":"$rate"}}}
+    ])
+
+    return list(avg) #e.g poiRatingAvg("LS1")
+
+def highScoreRatingType(postcode): #rating greater than 4.0 counting
+
+    highScore = dbGooPOI.aggregate([
+        {"$match":{"$and":[{"postcode":postcode},{"rating":{"$gte":4.0}}]}},
+        {"$project":{"_id":0,"label_type":1,"rate":"$rating","type":"$label_types"}}, 
+        {"$group":{"_id":"$type","count":{"$sum":1}}},
+        {"$sort":{"count":-1}}
+    ])
+
+    return list(highScore) #e.g highScoreRatingType("LS1")
+
+def rightmoveChannel(postcode): 
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry)
+
+    psToChannel = propertyCol.aggregate([
+    {"$match":{"geometry":{
+                "$geoWithin":{
+                "$geometry":list_dbGeometry[0]["geometry"]}}}
+                },
+                {"$project":{"_id": 0, 
+                            "channel":1}},
+    {"$group":{"_id":"$channel","count":{"$sum":1}}}
+    ])
+
+    return list(psToChannel) #e.g rightmoveChannel("LS1")
