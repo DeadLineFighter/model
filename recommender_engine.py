@@ -152,5 +152,5 @@ class RecommenderEngine:
                 break
 
         #convert DF to json.
-        json_result = json.dumps(resultDF.to_dict('records'))
+        json_result = resultDF.to_dict('records')
         return json_result
