@@ -42,7 +42,7 @@ def changeLatLong(postcode):
 
 #------Crime----------------
 #1
-def crime_month_line(df):
+def criMon_line(df):
     fig = px.line(df, x="date", y="all_crime&asb",
     labels={
         "all_crime&asb": "Number of crime",
@@ -71,10 +71,10 @@ def POI_type(df):
     df.sort_values(by=['count'],ascending=False,inplace=True)
     fig = px.bar(df, x="_id", y="count", color="_id",
     labels={
-        "count": "Num of industry",
-        "_id": "Type of industries"
+        "count": "Num of Industry",
+        "_id": "Type of Industries"
         },
-    title = "Number of type of industries")
+    title = "Number of Industries Type")
     return fig
 
 #2
@@ -84,18 +84,18 @@ def poiRat_bar(df):
     fig = px.bar(df, x='_id', y='avg', color='avg',
     labels={
         "_id": "Enterprise",
-        "avg": "Average score"
+        "avg": "Average Score"
         },
-    title = "Average score of Enterprise")
+    title = "Average Score of Enterprise")
     return fig
 
 #3
 def higRat_sca(df):
     fig = px.bar(df, x="_id", y="count", color="_id",
                 labels={
-                    "count": "Num of industry",
-                    "_id": "Type of industries"
-                    },title = "Number of type of industries"
+                    "count": "Num of Industry",
+                    "_id": "Industries Type"
+                    },title = "Number of Industries Type"
                 )
  
     return fig
@@ -126,7 +126,7 @@ def schPha_bar(df):
 def schRat_bar(df):
     df.fillna('Unclassified', inplace=True)
     df.sort_values(by=['count'],ascending=False,inplace=True)
-    fig = px.bar(df, x="count", y="_id", color='_id', orientation='h',
+    fig = px.bar(df, x="count", y="_id", color='_id',
         labels={
         "count": "Sum",
         "_id": "Number of School Rating"
@@ -138,7 +138,7 @@ def schRat_bar(df):
 #1
 def pro_line(df):
     df.sort_values(by=['count'],ascending=False,inplace=True)
-    fig = px.bar(df, x="_id", y="count",
+    fig = px.bar(df, x="_id", y="count", color='_id',
         labels={
             "count": "Num of Property",
             "_id": "Property Type"
@@ -159,15 +159,15 @@ def avgPri_pieBar(df):
         df.sort_values(by=['count'],ascending=False,inplace=True)
         fig = px.scatter(df, x="_id", y="count", color="_id", symbol="_id",
         labels={
-            "count": "Number of average price property",
-            "_id": "Type of property"
+            "count": "Number of Average Price Property",
+            "_id": "Type of Property"
             },
-        title = "Number of average price property" )
+        title = "Number of Average Price Property" )
         fig.update_traces(marker_size=20)
         return fig
     else:
         fig = px.pie(df, values='count', names='_id',
-            title='Number of average price property',
+            title='Number of Average Price Property',
             hover_data=['_id'], labels={'_id':'Type'})
         fig.update_traces(textposition='inside', textinfo='percent+label')
     return fig
