@@ -243,3 +243,11 @@ def rightmoveChannel(postcode):
     ])
 
     return list(psToChannel) #e.g rightmoveChannel("LS1")
+
+
+def geoMetry(postcode): #for map plotly
+
+    dbGeometry = geoCol.find({"name":postcode})
+    list_dbGeometry = list(dbGeometry)
+
+    return list_dbGeometry

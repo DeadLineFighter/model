@@ -172,3 +172,30 @@ def avgPri_pieBar(df):
         fig.update_traces(textposition='inside', textinfo='percent+label')
     return fig
 
+########MAP################
+def plotMap(postcode):
+
+    fig = go.Figure(go.Scattermapbox(
+        mode = "markers+text",
+        marker = {'size': 20, 'color': ["cyan"]},
+        text = geoMetry(postcode)[0]['name']))
+
+    fig.update_layout(
+        mapbox = {
+            'style': "stamen-terrain",
+            'center': { 'lon': geoMetry(postcode)[0]['geometry']['coordinates'][0][0][0], 'lat': geoMetry(postcode)[0]['geometry']['coordinates'][0][0][1]},
+            'zoom': 12, 'layers': [{
+                'source': {
+                    'type': "FeatureCollection",
+                    'features': [{
+                        'type': "Feature",
+                        'geometry': {
+                            'type': "MultiPolygon",
+                            'coordinates': [geoMetry(postcode)[0]['geometry']['coordinates']]
+                        }
+                    }]
+                },
+                'type': "line", 'below': "traces", 'color': "royalblue"}]},
+        margin = {'l':0, 'r':0, 'b':0, 't':0})
+
+    return fig 
